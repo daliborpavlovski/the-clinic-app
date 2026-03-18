@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexusClinic — Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <h1>Nexus<span>Clinic</span></h1>
+        <p>Create your patient account</p>
+      </div>
+
+      <div id="alert-container"></div>
+
+      <form id="register-form">
+        <div class="form-group">
+          <label class="form-label" for="full-name">Full name</label>
+          <input id="full-name" type="text" class="form-input" placeholder="Jane Smith" required data-testid="name-input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email address</label>
+          <input id="email" type="email" class="form-input" placeholder="you@example.com" required data-testid="email-input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input id="password" type="password" class="form-input" placeholder="Min. 8 chars, one digit" required data-testid="password-input" />
+          <div class="form-error" id="pwd-hint" style="display:none">
+            Password must be at least 8 characters and contain at least one digit.
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" data-testid="register-btn">
+          Create account
+        </button>
+      </form>
+
+      <p style="text-align:center; margin-top:16px; font-size:.875rem; color:var(--gray-500)">
+        Already have an account? <a href="/index.html">Sign in</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    if (Auth.isLoggedIn()) window.location.href = '/dashboard.html';
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fullName = document.getElementById('full-name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      // Client-side password validation
+      const hint = document.getElementById('pwd-hint');
+      if (password.length < 8 || !/\d/.test(password)) {
+        hint.style.display = '';
+        return;
+      }
+      hint.style.display = 'none';
+
+      const btn = e.target.querySelector('[type=submit]');
+      btn.disabled = true;
+      btn.textContent = 'Creating account…';
+      document.getElementById('alert-container').innerHTML = '';
+
+      try {
+        await api.register({ email, password, full_name: fullName, role: 'patient' });
+        showAlert('alert-container', 'Account created! Signing you in…', 'success');
+
+        const tokens = await api.login(email, password);
+        localStorage.setItem('nexus_token', tokens.access_token);
+        const user = await api.getMe();
+        Auth.save(tokens.access_token, user);
+
+        setTimeout(() => window.location.href = '/dashboard.html', 800);
+      } catch (err) {
+        showAlert('alert-container', err.message);
+        btn.disabled = false;
+        btn.textContent = 'Create account';
+      }
+    });
+  </script>
+</body>
+</html>

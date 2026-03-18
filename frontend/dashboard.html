@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexusClinic — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Nexus<span>Clinic</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/dashboard.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="/appointments.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Appointments</span>
+        </a>
+        <a href="/doctors.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Doctors</span>
+        </a>
+        <a href="/admin.html" class="nav-item" data-role="admin" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Admin</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar" id="sidebar-avatar">?</div>
+          <div>
+            <div class="user-name" id="sidebar-user-name">Loading…</div>
+            <div class="user-role" id="sidebar-user-role"></div>
+          </div>
+        </div>
+        <button class="btn-logout" id="btn-logout">Sign out</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+      <header class="topbar">
+        <div class="topbar-title" id="topbar-greeting">Good morning</div>
+      </header>
+
+      <main class="page-content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Your appointments overview</p>
+          </div>
+          <a href="/appointments.html" class="btn btn-primary" data-testid="book-appointment-btn" id="book-btn">
+            + Book Appointment
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-label">Total Appointments</div>
+            <div class="stat-value" id="stat-total">—</div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-label">Pending</div>
+            <div class="stat-value" id="stat-pending">—</div>
+          </div>
+          <div class="stat-card cyan">
+            <div class="stat-label">Confirmed</div>
+            <div class="stat-value" id="stat-confirmed">—</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-label">Completed</div>
+            <div class="stat-value" id="stat-completed">—</div>
+          </div>
+        </div>
+
+        <!-- Recent -->
+        <div class="card" style="margin-top:24px">
+          <div class="card-title">Recent Appointments</div>
+          <div id="recent-appointments">
+            <div class="loading-state"><div class="spinner"></div> Loading…</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    Auth.requireAuth();
+    initSidebar();
+
+    const user = Auth.getUser();
+    if (user) {
+      const hour = new Date().getHours();
+      const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+      document.getElementById('topbar-greeting').textContent = `${greeting}, ${user.full_name.split(' ')[0]}`;
+
+      // Doctors don't book — they see their schedule
+      if (user.role === 'doctor') {
+        document.getElementById('book-btn').style.display = 'none';
+      }
+    }
+
+    async function loadDashboard() {
+      try {
+        const data = await api.listAppointments(1, 100);
+        const items = data.items || [];
+
+        document.getElementById('stat-total').textContent = data.total || 0;
+        document.getElementById('stat-pending').textContent = items.filter(a => a.status === 'pending').length;
+        document.getElementById('stat-confirmed').textContent = items.filter(a => a.status === 'confirmed').length;
+        document.getElementById('stat-completed').textContent = items.filter(a => a.status === 'completed').length;
+
+        const recent = items.slice(0, 5);
+        if (recent.length === 0) {
+          document.getElementById('recent-appointments').innerHTML =
+            '<p style="color:var(--gray-500);padding:20px">No appointments yet.</p>';
+          return;
+        }
+
+        const rows = recent.map(a => `
+          <tr>
+            <td>${formatDate(a.start_time)}</td>
+            <td>${a.reason || '—'}</td>
+            <td>${statusBadge(a.status)}</td>
+            <td>
+              <a href="/appointments.html" class="btn btn-secondary btn-sm">View</a>
+            </td>
+          </tr>
+        `).join('');
+
+        document.getElementById('recent-appointments').innerHTML = `
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Date/Time</th><th>Reason</th><th>Status</th><th></th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      } catch (err) {
+        document.getElementById('recent-appointments').innerHTML =
+          `<div class="alert alert-error">${err.message}</div>`;
+      }
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
