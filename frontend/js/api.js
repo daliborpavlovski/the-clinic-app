@@ -20,18 +20,19 @@ const api = {
     if (body !== undefined) opts.body = JSON.stringify(body);
     const res = await fetch(`${API_BASE}${path}`, opts);
 
-    if (res.status === 401) {
-      // Token expired — redirect to login
-      localStorage.removeItem('clinic_token');
-      localStorage.removeItem('clinic_user');
-      if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/') {
-        window.location.href = '/index.html';
-      }
-      throw new Error('Unauthorized');
-    }
-
     let data;
     try { data = await res.json(); } catch { data = null; }
+
+    if (res.status === 401) {
+      const msg = data?.detail || 'Unauthorized';
+      // Redirect to login only for token-expiry on authenticated pages
+      if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/') {
+        localStorage.removeItem('clinic_token');
+        localStorage.removeItem('clinic_user');
+        window.location.href = '/index.html';
+      }
+      throw Object.assign(new Error(msg), { status: 401, data });
+    }
 
     if (!res.ok) {
       const msg = data?.detail || `HTTP ${res.status}`;
