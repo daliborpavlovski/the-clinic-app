@@ -45,7 +45,7 @@ jobs:
           DATABASE_URL: postgresql://clinic:clinic@localhost:5432/clinicdb
         run: |
           cd backend
-          alembic upgrade head
+          python -m alembic upgrade head
 
       - name: Seed database
         env:
