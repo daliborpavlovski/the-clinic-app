@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, model_validator
 from ..models.appointment import AppointmentStatus
 
 
@@ -7,7 +7,13 @@ class AppointmentCreate(BaseModel):
     doctor_id: int
     start_time: datetime
     end_time: datetime
-    reason: str | None = None
+    reason: str | None = Field(default=None, max_length=500)
+
+    @model_validator(mode='after')
+    def end_must_be_after_start(self) -> 'AppointmentCreate':
+        if self.end_time <= self.start_time:
+            raise ValueError('end_time must be after start_time')
+        return self
 
 
 class AppointmentRead(BaseModel):

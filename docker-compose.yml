@@ -3,18 +3,18 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: nexus-postgres
+    container_name: clinic-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: nexus
-      POSTGRES_PASSWORD: nexus
-      POSTGRES_DB: nexusdb
+      POSTGRES_USER: clinic
+      POSTGRES_PASSWORD: clinic
+      POSTGRES_DB: clinicdb
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U nexus -d nexusdb"]
+      test: ["CMD-SHELL", "pg_isready -U clinic -d clinicdb"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -23,14 +23,14 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: nexus-backend
+    container_name: clinic-backend
     restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://nexus:nexus@postgres:5432/nexusdb
-      SECRET_KEY: ${SECRET_KEY:-nexus-dev-secret-key-change-in-production}
+      DATABASE_URL: postgresql://clinic:clinic@postgres:5432/clinicdb
+      SECRET_KEY: ${SECRET_KEY:-clinic-dev-secret-key-change-in-production}
       DEBUG: ${DEBUG:-false}
       CORS_ORIGINS: '["http://localhost", "http://localhost:80", "http://localhost:8080"]'
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin1234!}
@@ -47,7 +47,7 @@ services:
 
   frontend:
     image: nginx:1.25-alpine
-    container_name: nexus-frontend
+    container_name: clinic-frontend
     restart: unless-stopped
     depends_on:
       backend:
@@ -63,4 +63,4 @@ volumes:
 
 networks:
   default:
-    name: nexus-network
+    name: clinic-network

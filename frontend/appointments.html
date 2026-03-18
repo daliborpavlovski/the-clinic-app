@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NexusClinic — Appointments</title>
+  <title>The Clinic App — Appointments</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
@@ -12,7 +12,7 @@
     <aside class="sidebar">
       <div class="sidebar-logo">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        Nexus<span>Clinic</span>
+        The Clinic<span>App</span>
       </div>
       <nav class="sidebar-nav">
         <a href="/dashboard.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Dashboard</span></a>
@@ -142,9 +142,9 @@
             <td>${a.reason || '—'}</td>
             <td>${statusBadge(a.status)}</td>
             <td>
-              ${canCancel(a) ? `<button class="btn btn-danger btn-sm" onclick="cancelAppt(${a.id})" data-testid="cancel-btn-${a.id}">Cancel</button>` : ''}
-              ${canConfirm(a) ? `<button class="btn btn-success btn-sm" onclick="confirmAppt(${a.id})" data-testid="confirm-btn-${a.id}">Confirm</button>` : ''}
-              ${canComplete(a) ? `<button class="btn btn-primary btn-sm" onclick="completeAppt(${a.id})">Complete</button>` : ''}
+              ${canCancel(a) ? `<button class="btn btn-danger btn-sm" data-action="cancel" data-id="${a.id}" data-testid="cancel-btn-${a.id}">Cancel</button>` : ''}
+              ${canConfirm(a) ? `<button class="btn btn-success btn-sm" data-action="confirm" data-id="${a.id}" data-testid="confirm-btn-${a.id}">Confirm</button>` : ''}
+              ${canComplete(a) ? `<button class="btn btn-primary btn-sm" data-action="complete" data-id="${a.id}">Complete</button>` : ''}
             </td>
           </tr>
         `).join('');
@@ -204,6 +204,17 @@
         <button class="page-btn" onclick="loadAppointments(${page+1})" ${page===pages?'disabled':''}>Next ›</button>
       `;
     }
+
+    // Action buttons (cancel / confirm / complete) via event delegation
+    document.getElementById('appt-table-body').addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const id = parseInt(btn.dataset.id, 10);
+      const action = btn.dataset.action;
+      if (action === 'cancel') await cancelAppt(id);
+      else if (action === 'confirm') await confirmAppt(id);
+      else if (action === 'complete') await completeAppt(id);
+    });
 
     // Book modal
     document.getElementById('btn-new-appt').addEventListener('click', async () => {

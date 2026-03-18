@@ -1,4 +1,4 @@
-name: NexusClinic App CI
+name: The Clinic App CI
 
 on:
   push:
@@ -15,9 +15,9 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: nexus
-          POSTGRES_PASSWORD: nexus
-          POSTGRES_DB: nexusdb
+          POSTGRES_USER: clinic
+          POSTGRES_PASSWORD: clinic
+          POSTGRES_DB: clinicdb
         ports:
           - 5432:5432
         options: >-
@@ -42,21 +42,21 @@ jobs:
 
       - name: Run Alembic migrations
         env:
-          DATABASE_URL: postgresql://nexus:nexus@localhost:5432/nexusdb
+          DATABASE_URL: postgresql://clinic:clinic@localhost:5432/clinicdb
         run: |
           cd backend
           alembic upgrade head
 
       - name: Seed database
         env:
-          DATABASE_URL: postgresql://nexus:nexus@localhost:5432/nexusdb
+          DATABASE_URL: postgresql://clinic:clinic@localhost:5432/clinicdb
         run: |
           cd backend
           python -m scripts.seed_db
 
       - name: Run pytest
         env:
-          DATABASE_URL: postgresql://nexus:nexus@localhost:5432/nexusdb
+          DATABASE_URL: postgresql://clinic:clinic@localhost:5432/clinicdb
           SECRET_KEY: test-secret-key-ci
         run: |
           cd backend
@@ -69,7 +69,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build backend image
-        run: docker build ./backend -t nexus-backend:ci
+        run: docker build ./backend -t clinic-backend:ci
 
       - name: Validate docker-compose
         run: docker compose config

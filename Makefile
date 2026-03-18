@@ -8,7 +8,7 @@ up:  ## Start all services
 	@echo "Waiting for services to be healthy…"
 	@sleep 3
 	@docker compose exec backend alembic upgrade head
-	@echo "✅ NexusClinic is up at http://localhost"
+	@echo "✅ The Clinic App is up at http://localhost"
 	@echo "   Swagger UI: http://localhost/docs"
 
 down:  ## Stop all services

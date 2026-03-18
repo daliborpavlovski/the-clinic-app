@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NexusClinic — Doctors</title>
+  <title>The Clinic App — Doctors</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
@@ -12,7 +12,7 @@
     <aside class="sidebar">
       <div class="sidebar-logo">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        Nexus<span>Clinic</span>
+        The Clinic<span>App</span>
       </div>
       <nav class="sidebar-nav">
         <a href="/dashboard.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Dashboard</span></a>
@@ -98,7 +98,10 @@
             <div style="font-size:.8rem;color:var(--gray-500);margin-bottom:12px">
               Slot duration: ${d.slot_duration_minutes} min
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="showSlots(${d.user_id}, '${d.doctor_name}')" data-testid="view-slots-btn-${d.user_id}">
+            <button class="btn btn-secondary btn-sm"
+              data-testid="view-slots-btn-${d.user_id}"
+              data-doctor-id="${d.user_id}"
+              data-doctor-name="${(d.doctor_name || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}">
               View Available Slots
             </button>
           </div>
@@ -144,6 +147,12 @@
         <button class="page-btn" onclick="loadDoctors(${page+1})" ${page===pages?'disabled':''}>Next ›</button>
       `;
     }
+
+    document.getElementById('doctors-grid').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-doctor-id]');
+      if (!btn) return;
+      showSlots(parseInt(btn.dataset.doctorId, 10), btn.dataset.doctorName);
+    });
 
     loadDoctors();
   </script>

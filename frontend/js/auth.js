@@ -3,11 +3,11 @@
  */
 const Auth = {
   getUser() {
-    try { return JSON.parse(localStorage.getItem('nexus_user')); } catch { return null; }
+    try { return JSON.parse(localStorage.getItem('clinic_user')); } catch { return null; }
   },
 
   getToken() {
-    return localStorage.getItem('nexus_token');
+    return localStorage.getItem('clinic_token');
   },
 
   isLoggedIn() {
@@ -15,13 +15,13 @@ const Auth = {
   },
 
   save(token, user) {
-    localStorage.setItem('nexus_token', token);
-    localStorage.setItem('nexus_user', JSON.stringify(user));
+    localStorage.setItem('clinic_token', token);
+    localStorage.setItem('clinic_user', JSON.stringify(user));
   },
 
   clear() {
-    localStorage.removeItem('nexus_token');
-    localStorage.removeItem('nexus_user');
+    localStorage.removeItem('clinic_token');
+    localStorage.removeItem('clinic_user');
   },
 
   requireAuth() {
@@ -102,9 +102,13 @@ function roleBadge(role) {
   return `<span class="badge badge-${role}">${role}</span>`;
 }
 
-/** Show an alert inside a container */
+/** Show an alert inside a container (message rendered as text, not HTML) */
 function showAlert(containerId, message, type = 'error') {
   const el = document.getElementById(containerId);
   if (!el) return;
-  el.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+  const div = document.createElement('div');
+  div.className = `alert alert-${type}`;
+  div.textContent = message;
+  el.innerHTML = '';
+  el.appendChild(div);
 }

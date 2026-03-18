@@ -1,6 +1,6 @@
-# NexusClinic — Demo Application
+# The Clinic App — Demo Application
 
-A fictional SaaS clinic appointment management platform built to demonstrate realistic QA/SDET test scenarios. Used as the **system under test** for [nexus-playwright](https://github.com/daliborpavlovski/nexus-playwright).
+A fictional SaaS clinic appointment management platform built to demonstrate realistic QA/SDET test scenarios. Used as the **system under test** for [the-clinic-playwright](https://github.com/daliborpavlovski/the-clinic-playwright).
 
 ## Tech Stack
 
@@ -32,9 +32,9 @@ open http://localhost/docs    # Swagger UI
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | `admin@nexusclinic.com` | `Admin1234!` |
-| Doctor | `doctor@nexusclinic.com` | `Doctor1234!` |
-| Patient | `patient@nexusclinic.com` | `Patient1234!` |
+| Admin | `admin@theclinicapp.com` | `Admin1234!` |
+| Doctor | `doctor@theclinicapp.com` | `Doctor1234!` |
+| Patient | `patient@theclinicapp.com` | `Patient1234!` |
 
 ## API Surface (`/api/v1`)
 

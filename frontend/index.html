@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NexusClinic — Login</title>
+  <title>The Clinic App — Login</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/styles.css" />
@@ -12,7 +12,7 @@
   <div class="auth-page">
     <div class="auth-card">
       <div class="auth-logo">
-        <h1>Nexus<span>Clinic</span></h1>
+        <h1>The Clinic<span>App</span></h1>
         <p>Clinic Appointment Management Platform</p>
       </div>
 
@@ -73,7 +73,7 @@
 
       try {
         const tokens = await api.login(email, password);
-        localStorage.setItem('nexus_token', tokens.access_token);
+        localStorage.setItem('clinic_token', tokens.access_token);
         const user = await api.getMe();
         Auth.save(tokens.access_token, user);
         window.location.href = '/dashboard.html';

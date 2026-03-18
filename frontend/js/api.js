@@ -1,11 +1,11 @@
 /**
- * NexusClinic API client — thin wrapper around fetch.
+ * The Clinic App API client — thin wrapper around fetch.
  */
-const API_BASE = window.NEXUS_API_URL || '/api/v1';
+const API_BASE = window.CLINIC_API_URL || '/api/v1';
 
 const api = {
   _getToken() {
-    return localStorage.getItem('nexus_token');
+    return localStorage.getItem('clinic_token');
   },
 
   _headers(extra = {}) {
@@ -22,8 +22,8 @@ const api = {
 
     if (res.status === 401) {
       // Token expired — redirect to login
-      localStorage.removeItem('nexus_token');
-      localStorage.removeItem('nexus_user');
+      localStorage.removeItem('clinic_token');
+      localStorage.removeItem('clinic_user');
       if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/') {
         window.location.href = '/index.html';
       }

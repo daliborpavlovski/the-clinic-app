@@ -1,7 +1,11 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python
 __pycache__/
 *.py[cod]
 *.egg-info/
-.env
 .venv/
 venv/
 dist/
@@ -10,6 +14,11 @@ build/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# Environment / secrets
+.env
+
+# Database files
 *.db
 *.sqlite3
 test.db

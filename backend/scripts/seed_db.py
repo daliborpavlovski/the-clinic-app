@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Seed the NexusClinic database with initial users and sample data.
+Seed The Clinic App database with initial users and sample data.
 Run: python -m scripts.seed_db  (from /backend directory)
 """
 import os
@@ -13,9 +13,9 @@ from app.database import SessionLocal, engine
 from app.models import User, UserRole, Appointment, AppointmentStatus, DoctorProfile
 from app.services.auth_service import AuthService
 
-ADMIN_EMAIL = "admin@nexusclinic.com"
-DOCTOR_EMAIL = "doctor@nexusclinic.com"
-PATIENT_EMAIL = "patient@nexusclinic.com"
+ADMIN_EMAIL = "admin@theclinicapp.com"
+DOCTOR_EMAIL = "doctor@theclinicapp.com"
+PATIENT_EMAIL = "patient@theclinicapp.com"
 
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "Admin1234!")
 DOCTOR_PASSWORD = os.getenv("DOCTOR_PASSWORD", "Doctor1234!")

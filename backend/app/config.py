@@ -4,7 +4,7 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = "postgresql://nexus:nexus@localhost:5432/nexusdb"
+    database_url: str = "postgresql://clinic:clinic@localhost:5432/clinicdb"
 
     # JWT
     secret_key: str = "supersecretkey-change-in-prod"
@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = 7
 
     # App
-    app_name: str = "NexusClinic API"
+    app_name: str = "The Clinic App API"
     debug: bool = False
     cors_origins: list[str] = ["http://localhost", "http://localhost:3000", "http://localhost:8080"]
 

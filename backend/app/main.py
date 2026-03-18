@@ -7,7 +7,7 @@ settings = get_settings()
 
 app = FastAPI(
     title=settings.app_name,
-    description="NexusClinic — Clinic Appointment Management Platform API",
+    description="The Clinic App — Clinic Appointment Management Platform API",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -36,4 +36,4 @@ def health_check():
 
 @app.get("/", include_in_schema=False)
 def root():
-    return {"message": "NexusClinic API", "docs": "/docs"}
+    return {"message": "The Clinic App API", "docs": "/docs"}
