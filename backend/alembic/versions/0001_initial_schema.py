@@ -43,7 +43,7 @@ def upgrade() -> None:
         sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("specialty", sa.String(length=200), nullable=False),
         sa.Column("bio", sa.Text(), nullable=True),
-        sa.Column("available_slots", sa.JSON(), nullable=False, server_default="'[]'"),
+        sa.Column("available_slots", sa.JSON(), nullable=False, server_default=sa.text("'[]'")),
         sa.Column("slot_duration_minutes", sa.Integer(), nullable=False, server_default="30"),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("NOW()")),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("NOW()")),
