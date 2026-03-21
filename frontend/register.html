@@ -73,7 +73,6 @@
         showAlert('alert-container', 'Account created! Signing you in…', 'success');
 
         const tokens = await api.login(email, password);
-        localStorage.setItem('clinic_token', tokens.access_token);
         const user = await api.getMe();
         Auth.save(tokens.access_token, user);
 
