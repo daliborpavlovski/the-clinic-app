@@ -5,7 +5,7 @@ from ..dependencies import get_db, get_current_user
 from ..models.user import User, UserRole
 from ..models.doctor_profile import DoctorProfile
 from ..models.appointment import Appointment, AppointmentStatus
-from ..schemas.doctor import DoctorProfileRead, DoctorProfileUpdate, DoctorSlot
+from ..schemas.doctor import DoctorProfileRead, DoctorProfileUpdate, DoctorSlot, DoctorList
 from ..utils.exceptions import not_found, forbidden
 from ..utils.pagination import Pagination
 
@@ -25,7 +25,7 @@ def _profile_to_read(profile: DoctorProfile) -> DoctorProfileRead:
     )
 
 
-@router.get("", response_model=dict)
+@router.get("", response_model=DoctorList)
 def list_doctors(
     pagination: Pagination = Depends(),
     db: Session = Depends(get_db),

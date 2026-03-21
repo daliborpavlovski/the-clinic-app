@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from ..dependencies import get_db, get_current_user, require_admin
 from ..models.user import User
 from ..schemas.user import UserRead, UserUpdate, UserList
-from ..utils.exceptions import not_found, forbidden
+from ..utils.exceptions import not_found, forbidden, conflict
 from ..utils.pagination import Pagination
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -25,7 +25,6 @@ def update_me(
     if payload.email is not None:
         existing = db.query(User).filter(User.email == payload.email, User.id != current_user.id).first()
         if existing:
-            from ..utils.exceptions import conflict
             raise conflict("Email already in use")
         current_user.email = payload.email
     db.commit()

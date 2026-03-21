@@ -60,7 +60,7 @@
       <div class="modal-title" id="slots-title">Available Slots</div>
       <div id="slots-content" style="max-height:400px;overflow-y:auto"></div>
       <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="document.getElementById('modal-slots').classList.add('hidden')">Close</button>
+        <button class="btn btn-secondary" id="btn-close-slots">Close</button>
       </div>
     </div>
   </div>
@@ -109,7 +109,8 @@
 
         renderPagination(data.page, data.pages);
       } catch (err) {
-        grid.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+        grid.innerHTML = '';
+        showAlert('doctors-grid', err.message);
       }
     }
 
@@ -134,7 +135,7 @@
           </div>
         `).join('');
       } catch (err) {
-        document.getElementById('slots-content').innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+        showAlert('slots-content', err.message);
       }
     }
 
@@ -147,6 +148,10 @@
         <button class="page-btn" onclick="loadDoctors(${page+1})" ${page===pages?'disabled':''}>Next ›</button>
       `;
     }
+
+    document.getElementById('btn-close-slots').addEventListener('click', () => {
+      document.getElementById('modal-slots').classList.add('hidden');
+    });
 
     document.getElementById('doctors-grid').addEventListener('click', (e) => {
       const btn = e.target.closest('[data-doctor-id]');

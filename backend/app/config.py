@@ -17,11 +17,6 @@ class Settings(BaseSettings):
     debug: bool = False
     cors_origins: list[str] = ["http://localhost", "http://localhost:3000", "http://localhost:8080"]
 
-    # Seed passwords (used by test framework)
-    admin_password: str = "Admin1234!"
-    doctor_password: str = "Doctor1234!"
-    patient_password: str = "Patient1234!"
-
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
