@@ -21,7 +21,6 @@ def create_appointment(
     current_user: User = Depends(get_current_user),
 ):
     if current_user.role == UserRole.doctor:
-        from ..utils.exceptions import forbidden
         raise forbidden("Doctors cannot book appointments as patients")
     service = AppointmentService(db)
     return service.create_appointment(payload, current_user)

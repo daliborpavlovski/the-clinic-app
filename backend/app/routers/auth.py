@@ -5,7 +5,7 @@ from ..models.user import User
 from ..schemas.auth import LoginRequest, Token, TokenRefresh
 from ..schemas.user import UserCreate, UserRead
 from ..services.auth_service import AuthService
-from ..utils.exceptions import conflict
+from ..utils.exceptions import conflict, unauthorized
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -43,12 +43,10 @@ def refresh_token(payload: TokenRefresh, db: Session = Depends(get_db)):
     auth_service = AuthService(db)
     decoded = auth_service.decode_token(payload.refresh_token)
     if decoded.get("type") != "refresh":
-        from ..utils.exceptions import unauthorized
         raise unauthorized("Invalid token type")
     user_id = int(decoded["sub"])
     user = db.query(User).filter(User.id == user_id, User.is_active == True).first()
     if not user:
-        from ..utils.exceptions import unauthorized
         raise unauthorized("User not found")
     access_token = auth_service.create_access_token(user.id, user.role.value)
     new_refresh = auth_service.create_refresh_token(user.id)

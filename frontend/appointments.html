@@ -151,7 +151,8 @@
 
         renderPagination(data.page, data.pages);
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="6"><div class="alert alert-error">${err.message}</div></td></tr>`;
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--gray-500)">Failed to load appointments.</td></tr>';
+        showAlert('alert-container', err.message);
       }
     }
 
@@ -264,7 +265,7 @@
         showAlert('alert-container', 'Appointment booked successfully!', 'success');
         loadAppointments(1);
       } catch (err) {
-        document.getElementById('modal-alert').innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+        showAlert('modal-alert', err.message);
       }
     });
 

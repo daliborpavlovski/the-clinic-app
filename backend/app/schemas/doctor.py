@@ -48,3 +48,11 @@ class DoctorSlot(BaseModel):
     start_time: datetime
     end_time: datetime
     available: bool
+
+
+class DoctorList(BaseModel):
+    items: list[DoctorProfileRead]
+    total: int
+    page: int
+    size: int
+    pages: int

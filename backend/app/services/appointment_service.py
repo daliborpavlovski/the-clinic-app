@@ -24,16 +24,13 @@ class AppointmentService:
         if start <= now:
             raise bad_request("Appointment must be scheduled for a future time slot")
 
-        if end <= start:
-            raise bad_request("End time must be after start time")
-
         # Check double-booking for patient
-        patient_conflict = self._check_conflict(data.doctor_id, None, start, end, patient.id)
+        patient_conflict = self._check_conflict(None, start, end, patient.id)
         if patient_conflict:
             raise conflict("You already have an appointment at this time slot")
 
         # Check double-booking for doctor
-        doctor_conflict = self._check_conflict(data.doctor_id, data.doctor_id, start, end, None)
+        doctor_conflict = self._check_conflict(data.doctor_id, start, end, None)
         if doctor_conflict:
             raise conflict("Doctor is not available at this time slot")
 
@@ -51,7 +48,7 @@ class AppointmentService:
         return appointment
 
     def _check_conflict(
-        self, doctor_id: int, check_doctor_id: int | None, start: datetime, end: datetime,
+        self, check_doctor_id: int | None, start: datetime, end: datetime,
         check_patient_id: int | None, exclude_id: int | None = None
     ) -> bool:
         query = self.db.query(Appointment).filter(
