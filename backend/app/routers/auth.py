@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from ..dependencies import get_db, get_current_user
-from ..models.user import User
+from ..models.user import User, UserRole
 from ..schemas.auth import LoginRequest, Token, TokenRefresh
 from ..schemas.user import UserCreate, UserRead
 from ..services.auth_service import AuthService
@@ -21,7 +21,7 @@ def register(payload: UserCreate, db: Session = Depends(get_db)):
         email=payload.email,
         hashed_password=auth_service.hash_password(payload.password),
         full_name=payload.full_name,
-        role=payload.role,
+        role=UserRole.patient,
     )
     db.add(user)
     db.commit()

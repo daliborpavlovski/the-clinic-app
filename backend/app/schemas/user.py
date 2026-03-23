@@ -7,7 +7,6 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     full_name: str
-    role: UserRole = UserRole.patient
 
     @field_validator("password")
     @classmethod
