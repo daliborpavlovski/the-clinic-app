@@ -43,6 +43,7 @@ jobs:
       - name: Run Alembic migrations
         env:
           DATABASE_URL: postgresql://clinic:clinic@localhost:5432/clinicdb
+          SECRET_KEY: test-secret-key-ci
         run: |
           cd backend
           python -m alembic upgrade head
@@ -50,6 +51,7 @@ jobs:
       - name: Seed database
         env:
           DATABASE_URL: postgresql://clinic:clinic@localhost:5432/clinicdb
+          SECRET_KEY: test-secret-key-ci
         run: |
           cd backend
           python -m scripts.seed_db
